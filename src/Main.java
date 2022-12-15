@@ -82,6 +82,7 @@ public class Main {
 
         @Override
         public int compareTo(City o) {
+
             return this.name.compareTo(o.getName());
         }
         public static Comparator<City> NameComparator = new Comparator<City>() {
