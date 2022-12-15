@@ -10,22 +10,20 @@ public class Main {
         Scanner scanner = new Scanner(path);
         scanner.useDelimiter(System.getProperty("line.separator"));
         List<City> list = new ArrayList<>();
-        List<City> list1 = new ArrayList<>();
+
         while(scanner.hasNextLine()){
-//            System.out.println(scanner.next());
             City city = parseCSVLine(scanner.next());
-//            System.out.println(city.toString());
             list.add(city);
-            list1.add(city);
         }
-        Collections.sort(list,City.NameComparator);
-        Collections.sort(list1, City.DistrictComparator);
-        for(City e : list){
-            System.out.println(e);
+        int res = 0;
+        int index = 0;
+        for(int i = 0; i < list.size();i++){
+            if(res < list.get(i).population1){
+                res = list.get(i).population1;
+                index = i;
+            }
         }
-        for(City a: list1){
-            System.out.println(a);
-        }
+        System.out.println("[" + index + "]" + " = " + res);
         scanner.close();
 
     }
@@ -38,21 +36,28 @@ public class Main {
         String region = scanner.next();
         String district = scanner.next();
         String population = scanner.next();
+        int population1 = Integer.parseInt(population);
         String foundation = null;
         if (scanner.hasNext()) {
             foundation = scanner.next();
         }
         Main main = new Main();
-        return main.new City(name, region, district, population, foundation);
+        return main.new City(name, region, district, population, foundation, population1);
     }
 
 
-    public class City implements Comparable<City>{
+    public class City{
         private String name;
         private String region;
         private String district;
         private String population;
         private String foundation;
+
+        private int population1;
+
+        public int getPopulation1(){
+            return population1;
+        }
 
         public String getName() {
             return name;
@@ -62,12 +67,13 @@ public class Main {
             return district;
         }
 
-        public City (String name, String region, String district, String population, String foundation){
+        public City (String name, String region, String district, String population, String foundation,int population1){
             this.name = name;
             this.region = region;
             this.district = district;
             this.population = population;
             this.foundation = foundation;
+            this.population1 = population1;
         }
 
 
@@ -80,26 +86,7 @@ public class Main {
         }
 
 
-        @Override
-        public int compareTo(City o) {
 
-            return this.name.compareTo(o.getName());
-        }
-        public static Comparator<City> NameComparator = new Comparator<City>() {
-            @Override
-            public int compare(City o1, City o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        };
-        public static Comparator<City> DistrictComparator = new Comparator<City>() {
-            @Override
-            public int compare(City o1, City o2) {
-                if(o1.getDistrict().compareTo(o2.getDistrict()) == 0){
-                    return o1.getName().compareTo(o2.getName());
-                }
-                return o1.getDistrict().compareTo(o2.getDistrict());
-            }
-        };
     }
 
 }
