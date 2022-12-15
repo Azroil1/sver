@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -9,21 +10,18 @@ public class Main {
         Path path = Paths.get(fileName);
         Scanner scanner = new Scanner(path);
         scanner.useDelimiter(System.getProperty("line.separator"));
-        List<City> list = new ArrayList<>();
+        List<String> list = new ArrayList<>();
 
         while(scanner.hasNextLine()){
             City city = parseCSVLine(scanner.next());
-            list.add(city);
+            list.add(city.region);
         }
-        int res = 0;
-        int index = 0;
-        for(int i = 0; i < list.size();i++){
-            if(res < list.get(i).population1){
-                res = list.get(i).population1;
-                index = i;
-            }
-        }
-        System.out.println("[" + index + "]" + " = " + res);
+        Map<String,Integer> cityInRegion = list.stream()
+                        .collect(Collectors.toMap(
+                                e->e,
+                                e->1,
+                                Integer::sum));
+        cityInRegion.forEach((k,v) -> System.out.println(k  + "-" + v));
         scanner.close();
 
     }
@@ -46,6 +44,7 @@ public class Main {
     }
 
 
+
     public class City{
         private String name;
         private String region;
@@ -66,6 +65,7 @@ public class Main {
         public String getDistrict() {
             return district;
         }
+        public String getRegion(){return region;}
 
         public City (String name, String region, String district, String population, String foundation,int population1){
             this.name = name;
@@ -84,6 +84,7 @@ public class Main {
                     ",population = " + "'" + this.population + "'" +
                     ",foundation = " + "'" + this.foundation + "'" + "}";
         }
+
 
 
 
